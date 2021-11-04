@@ -24,18 +24,3 @@ target_include_directories(
 
 target_link_libraries(main a_lib)
 
-if (MSVC)
-    target_compile_options(main PRIVATE
-        /W4
-    )
-    target_compile_options(a_lib PRIVATE
-        /W4
-    )
-else ()
-    target_compile_options(main PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    target_compile_options(a_lib PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-endif()
