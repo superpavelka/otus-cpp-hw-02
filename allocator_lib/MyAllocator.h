@@ -45,6 +45,14 @@ struct MyAllocator {
 
 	Chunk* mem_chunk = nullptr;
 	bool deallocate_chunk = false;
+
+	template<typename U, typename ...Args>
+	void construct(U* p, Args&&...args) {
+		new(p) U(std::forward<Args>(args)...);
+	};
+	void destroy(T* p) {
+		(p)->~T();
+	}
 };
 
 template <typename T, size_t total_size>

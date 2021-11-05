@@ -1,9 +1,10 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.9)
 
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 project(MyAllocator VERSION ${PROJECT_VERSION})
 
+add_subdirectory(mylist_lib)
 add_subdirectory(allocator_lib)
 add_subdirectory(src)
 
