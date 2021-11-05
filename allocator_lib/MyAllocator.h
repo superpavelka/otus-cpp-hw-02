@@ -3,7 +3,8 @@
 #include <iostream>
 #include <memory>
 
-class Chunk {
+class Chunk
+{
 public:
 	Chunk(std::size_t len) : total_size(len) {};
 	~Chunk();
@@ -44,8 +45,6 @@ struct MyAllocator {
 
 	Chunk* mem_chunk = nullptr;
 	bool deallocate_chunk = false;
-	//size_t offset = 0;
-	size_t total_size = 10;
 };
 
 template <typename T, size_t total_size>
@@ -53,6 +52,7 @@ MyAllocator<T, total_size>::MyAllocator()
 {
 	std::cout << "Constructor of MyAllocator" << std::endl;
 	mem_chunk = new Chunk(total_size);
+	mem_chunk->node = malloc(mem_chunk->total_size * sizeof(T));
 }
 
 template <typename T, size_t total_size>
@@ -69,18 +69,15 @@ MyAllocator<T, total_size>::MyAllocator(const MyAllocator<U>& alloc)
 template <typename T, size_t total_size>
 T* MyAllocator<T, total_size>::allocate(std::size_t count)
 {
-	mem_chunk->node = malloc(total_size * sizeof(T));
-
 	if (!mem_chunk->node)
 		throw std::bad_alloc();
 
-	if (mem_chunk->offset + count > total_size)
+	if (mem_chunk->offset + count > mem_chunk->total_size)
 	{
-		mem_chunk->next = new Chunk(total_size + total_size * 2);
+		mem_chunk->next = new Chunk(mem_chunk->total_size + mem_chunk->total_size * 2);
 		mem_chunk->next->prev = mem_chunk;
 		mem_chunk = mem_chunk->next;
-		total_size = total_size + total_size * 2;
-		mem_chunk->node = malloc(total_size * sizeof(T));
+		mem_chunk->node = malloc(mem_chunk->total_size * sizeof(T));
 		mem_chunk->offset = 0;
 	}
 
